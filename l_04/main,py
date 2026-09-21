@@ -1,0 +1,18 @@
+from curl_cffi import requests
+from camoufox.sync_api import Camoufox
+
+link = 'https://old.bankrot.fedresurs.ru/Messages.aspx'
+
+with Camoufox(headless = True) as br:
+    page = br.new_page()
+    responce = page.goto(link, wait_until='domcontentloaded')
+    page.wait_for_timeout(5000)
+    kooki = page.context.cookies()
+    user_agent = page.evaluate('navigator.userAgent')
+
+req_cook = {i['name']: i['value'] for i in kooki}
+req_hed = {'User-Agen': user_agent}
+responce = requests.get(link, headers= req_hed, cookies= req_cook)
+print(responce.status_code)
+
+    
